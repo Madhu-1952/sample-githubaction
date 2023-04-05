@@ -1,0 +1,34 @@
+name: SonarQube Analysis
+
+on: push
+
+jobs:
+  sonarqube:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Setup JDK
+        uses: actions/setup-java@v1
+        with:
+          java-version: '11'
+
+      - name: Cache SonarQube packages
+        uses: actions/cache@v2
+        with:
+          path: ~/.sonar/cache
+          key: ${{ runner.os }}-sonarqube-${{ hashFiles('**/sonar-project.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-sonarqube-
+
+      - name: SonarQube Scan
+        uses: SonarSource/sonar-scanner-cli@master
+        with:
+          sonar-project-key: sample
+          sonar-project-name: sample
+          sonar-project-version: your-project-version
+          sonar.sources: .
+          sonar.host.url: 65.2.126.99:9000
+          sonar.login: ${{ secrets.SONARQUBE_TOKEN }}
