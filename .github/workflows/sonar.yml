@@ -15,14 +15,7 @@ jobs:
         with:
           java-version: '11'
 
-      - name: Cache SonarQube packages
-        uses: actions/cache@v2
-        with:
-          path: ~/.sonar/cache
-          key: ${{ runner.os }}-sonarqube-${{ hashFiles('**/sonar-project.properties') }}
-          restore-keys: |
-            ${{ runner.os }}-sonarqube-
-
+      
       - name: SonarQube Scan
         uses: SonarSource/sonar-scanner-cli@master
         with:
