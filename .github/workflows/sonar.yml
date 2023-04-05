@@ -1,19 +1,32 @@
-name: Sonar Analysis
+name: SonarQube Analysis
+
 on:
   push:
-    branches:
-      - master # or the name of your main branch
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+env:
+  SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
 jobs:
-  build:
-    name: Build
+  sonarqube:
+    name: SonarQube
     runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
-      - uses: docker://sonarsource/sonar-scanner-cli:latest
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up Java
+      uses: actions/setup-java@v1
+      with:
+        java-version: 11
+
+    - name: Run SonarQube analysis
+      uses: sonarsource/sonarqube-scan-action@v1
+      with:
+        sonar-project-key: sample
+        sonar-project-name: sample
+        sonar-host-url: http://65.2.126.99:9000
+        sonar-login: ${{ env.SONAR_TOKEN }}
